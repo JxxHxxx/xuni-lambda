@@ -3,24 +3,28 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Getter
+import static com.jxx.xuni.lambda.group.domain.GroupStatus.GATHERING;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 @Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "study_group", indexes = @Index(name = "study_group_category", columnList = "category"))
 public class Group {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "group_id")
     private Long id;
 
     @Enumerated(value = EnumType.STRING)
     private GroupStatus groupStatus;
+    private LocalDateTime createdDate;
     @Embedded
     private Period period;
     @Embedded
@@ -34,26 +38,28 @@ public class Group {
     @Version
     private long version;
 
-    @ElementCollection
-    @CollectionTable(name = "group_member", joinColumns = @JoinColumn(name = "group_id"))
+    @JoinColumn(name = "group_id")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<GroupMember> groupMembers = new ArrayList<>();
 
-    @ElementCollection
-    @CollectionTable(name = "group_study_check", joinColumns = @JoinColumn(name = "group_id"))
-    private List<StudyCheck> studyChecks = new ArrayList<>();
+    @JoinColumn(name = "group_id")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks = new ArrayList<>();
 
     @Builder
-    protected Group(Long id, GroupStatus groupStatus, Period period, Time time, Capacity capacity, Study study, Host host, List<GroupMember> groupMembers) {
-        this.id = id;
-        this.groupStatus = groupStatus;
+    public Group(Period period, Time time, Capacity capacity, Study study, Host host) {
+        this.groupStatus = GATHERING;
         this.period = period;
         this.time = time;
         this.capacity = capacity;
         this.study = study;
         this.host = host;
-        this.groupMembers = groupMembers;
+        this.version = 0l;
+        this.createdDate = LocalDateTime.now();
 
-        addInGroup(new GroupMember(host.getHostId(), host.getHostName()));
+        this.groupMembers.add(new GroupMember(host.getHostId(), host.getHostName()));
+        this.capacity.subtractOneLeftCapacity();
+
     }
 
     private void addInGroup(GroupMember member) {
