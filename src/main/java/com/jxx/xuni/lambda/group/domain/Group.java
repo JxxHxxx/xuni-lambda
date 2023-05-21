@@ -37,13 +37,9 @@ public class Group {
     private Host host;
     @Version
     private long version;
-
-    @JoinColumn(name = "group_id")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "group")
     private List<GroupMember> groupMembers = new ArrayList<>();
-
-    @JoinColumn(name = "group_id")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "group")
     private List<Task> tasks = new ArrayList<>();
 
     @Builder
@@ -57,9 +53,8 @@ public class Group {
         this.version = 0l;
         this.createdDate = LocalDateTime.now();
 
-        this.groupMembers.add(new GroupMember(host.getHostId(), host.getHostName()));
+        this.groupMembers.add(new GroupMember(host.getHostId(), host.getHostName(), this));
         this.capacity.subtractOneLeftCapacity();
-
     }
 
     private void addInGroup(GroupMember member) {
@@ -72,5 +67,13 @@ public class Group {
         }
 
         this.capacity.subtractOneLeftCapacity();
+    }
+
+    public void update(Long memberId, List<StudyProductDto> details) {
+        List<Task> tasks = details.stream()
+                .map(d -> Task.init(memberId, d.getChapterId(), d.getTitle(), this))
+                .toList();
+
+        this.tasks.addAll(tasks);
     }
 }
