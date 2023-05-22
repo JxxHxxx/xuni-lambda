@@ -14,5 +14,5 @@ public interface StudyProductReadRepository extends JpaRepository<StudyProduct, 
 
     @Query(value = "select sp from StudyProduct sp " +
             "join fetch sp.studyProductDetail spd where sp.id =:studyProductId")
-    StudyProduct readDetailWithFetch(@Param("studyProductId") String studyProductId);
+    StudyProduct readProduct(@Param("studyProductId") String studyProductId);
 }

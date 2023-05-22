@@ -16,12 +16,4 @@ public class Host {
         this.hostId = hostId;
         this.hostName = hostName;
     }
-
-    protected boolean isNotHost(Long memberId) {
-        return !this.hostId.equals(memberId);
-    }
-
-    protected boolean isHost(Long memberId) {
-        return this.hostId.equals(memberId);
-    }
 }

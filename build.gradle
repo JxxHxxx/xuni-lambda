@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.cloud:spring-cloud-function-web:4.0.2'
 
     compileOnly 'org.projectlombok:lombok'
@@ -29,6 +29,7 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.h2database:h2'
 
     implementation 'org.springframework.cloud:spring-cloud-function-adapter-aws:4.0.2'
     // AWS Lambda 에 배포하기 위한 의존성

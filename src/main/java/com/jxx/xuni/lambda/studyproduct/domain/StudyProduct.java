@@ -27,11 +27,14 @@ public class StudyProduct {
     @CollectionTable(name = "study_product_detail", joinColumns = @JoinColumn(name = "study_product_id"))
     private List<StudyProductDetail> studyProductDetail = new ArrayList<>();
 
-
     public StudyProduct(String name, Category category, Topic topic) {
         this.id = UUID.randomUUID().toString();
         this.name = name;
         this.category = category;
         this.topic = topic;
+    }
+
+    public List<StudyProductDetail> getDetails() {
+        return this.studyProductDetail;
     }
 }

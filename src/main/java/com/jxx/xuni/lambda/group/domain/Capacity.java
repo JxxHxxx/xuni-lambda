@@ -22,13 +22,4 @@ public class Capacity {
     protected void subtractOneLeftCapacity() {
         this.leftCapacity -= 1;
     }
-
-    protected void addOneLeftCapacity() {
-        this.leftCapacity += 1;
-    }
-
-    protected boolean hasNotLeftCapacity() {
-        return this.leftCapacity <= 0;
-    }
-
 }
