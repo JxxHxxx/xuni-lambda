@@ -1,19 +1,19 @@
 package com.jxx.xuni.lambda.group.domain;
+import com.jxx.xuni.lambda.studyproduct.domain.StudyProductDetail;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.jxx.xuni.lambda.group.domain.GroupStatus.GATHERING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "study_group", indexes = @Index(name = "study_group_category", columnList = "category"))
 public class Group {
@@ -57,23 +57,43 @@ public class Group {
         this.capacity.subtractOneLeftCapacity();
     }
 
-    private void addInGroup(GroupMember member) {
-        Optional<GroupMember> optionalGroupMember = groupMembers.stream().filter(g -> g.isLeftMember(member)).findFirst();
-        if (optionalGroupMember.isPresent()) {
-            optionalGroupMember.get().comeBack();
-        }
-        if (optionalGroupMember.isEmpty()) {
-            groupMembers.add(member);
-        }
-
-        this.capacity.subtractOneLeftCapacity();
-    }
-
-    public void update(Long memberId, List<StudyProductDto> details) {
+    public void initGroupTask(Long memberId, List<StudyProductDetail> details) {
         List<Task> tasks = details.stream()
                 .map(d -> Task.init(memberId, d.getChapterId(), d.getTitle(), this))
                 .toList();
 
         this.tasks.addAll(tasks);
+    }
+
+    public GroupStatus getGroupStatus() {
+        return groupStatus;
+    }
+
+    public String getStudyProductId() {
+        return this.study.getId();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public List<GroupMember> getGroupMembers() {
+        return groupMembers;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public LocalDate getStartDate() {
+        return period.getStartDate();
+    }
+
+    public LocalDate getEndDate() {
+        return period.getEndDate();
+    }
+
+    public void changeGroupStatusTo(GroupStatus groupStatus) {
+        this.groupStatus = groupStatus;
     }
 }

@@ -33,28 +33,4 @@ public class GroupMember {
         this.lastVisitedTime = now();
         this.group = group;
     }
-
-    protected boolean isSameMemberId(Long groupMemberId) {
-        return this.groupMemberId.equals(groupMemberId);
-    }
-
-    protected void leave() {
-        this.isLeft = true;
-    }
-
-    protected boolean hasNotLeft() {
-        return !isLeft;
-    }
-
-    protected void comeBack() {
-        this.isLeft = false;
-    }
-
-    protected boolean isLeftMember(GroupMember groupMember) {
-        return this.groupMemberId.equals(groupMember.getGroupMemberId());
-    }
-
-    protected void updateLastVisitedTime() {
-        this.lastVisitedTime = now();
-    }
 }
